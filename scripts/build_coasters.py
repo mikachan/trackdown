@@ -109,7 +109,10 @@ def main(src, dst):
                 tags['area_id'] = a['id']
                 break
 
+        verts = list(degree)
         coasters.append({
+            'osm_id': min(s['id'] for s in segs),
+            'centroid': [sum(p[0] for p in verts) / len(verts), sum(p[1] for p in verts) / len(verts)],
             'ways': [s['id'] for s in segs],
             'tags': tags,
             'length_m': round(length),

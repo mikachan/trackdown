@@ -5,6 +5,7 @@ Usage: python3 -I parse_infoboxes.py <pages.json> <coasters.json> <out.json>
 import json
 import re
 import sys
+import unicodedata
 from collections import Counter
 
 
@@ -77,6 +78,38 @@ def text(v):
     return re.sub(r'\s+', ' ', v).strip() or None
 
 
+def coord(v):
+    """Decimal (lat, lon) from a {{coord}} template: decimal+hemisphere, DMS, or plain signed."""
+    m = re.search(r'\{\{\s*coords?\s*\|([^{}]*)\}\}', v or '', re.I)
+    if not m:
+        return None
+    params = [p.strip() for p in m.group(1).split('|') if p.strip() and '=' not in p and ':' not in p]
+
+    def dms(parts):
+        return sum(float(p) / 60 ** i for i, p in enumerate(parts))
+
+    try:
+        ns = next(i for i, p in enumerate(params) if p.upper() in ('N', 'S'))
+        ew = next(i for i, p in enumerate(params) if p.upper() in ('E', 'W'))
+        lat = dms(params[:ns]) * (-1 if params[ns].upper() == 'S' else 1)
+        lon = dms(params[ns + 1:ew]) * (-1 if params[ew].upper() == 'W' else 1)
+    except StopIteration:
+        try:
+            lat, lon = float(params[0]), float(params[1])
+        except (IndexError, ValueError):
+            return None
+    except ValueError:
+        return None
+    return (round(lat, 6), round(lon, 6))
+
+
+def slug(name, park):
+    s = ' '.join(p for p in (name, park) if p)
+    s = s.replace('ø', 'o').replace('Ø', 'O').replace('æ', 'ae').replace('Æ', 'Ae').replace('ß', 'ss')
+    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode()
+    return re.sub(r'[^a-z0-9]+', '-', s.lower()).strip('-')
+
+
 def metric(f, ft_key, m_key, factor=0.3048):
     if number(f.get(m_key)) is not None:
         return round(number(f[m_key]), 1)
@@ -87,17 +120,31 @@ def metric(f, ft_key, m_key, factor=0.3048):
 
 def main(src, osm_src, dst):
     pages = json.load(open(src))
-    rows = []
+    rows, seen = [], set()
     for title, wikitext in pages.items():
         for box in boxes(wikitext):
             f = fields(box)
             speed = number(f.get('speed_km/h'))
             if speed is None and number(f.get('speed_mph')) is not None:
                 speed = number(f['speed_mph']) * 1.609344
+            name = text(f.get('name')) or title
+            park = text(f.get('location'))
+            pos = coord(f.get('coordinates'))
+            row_id = slug(name, park)
+            n = 2
+            while row_id in seen:
+                row_id = '%s-%d' % (slug(name, park), n)
+                n += 1
+            seen.add(row_id)
             rows.append({
+                'id': row_id,
                 'article': title,
-                'name': text(f.get('name')) or title,
-                'park': text(f.get('location')),
+                'name': name,
+                'park': park,
+                'lat': pos[0] if pos else None,
+                'lon': pos[1] if pos else None,
+                'type': text(f.get('type')),
+                'model': text(f.get('model')),
                 'status': text(f.get('status')),
                 'opened': year(f.get('opened')),
                 'manufacturer': text(f.get('manufacturer')),
