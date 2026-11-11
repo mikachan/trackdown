@@ -3,34 +3,40 @@
 </svelte:head>
 
 <article>
-	<h1>About Trackdown</h1>
-
-	<h2>Daily Trackdown</h2>
+	<h1>Hello, coaster fans</h1>
 	<p>
-		Every day there's a new roller coaster to find, the same one for everyone. All you get is its track, seen from
-		above with north at the top. You have six guesses. Each wrong guess unlocks a clue: when it opened, how tall it is,
-		its top speed, who built it, and finally where it is. A new coaster arrives at midnight UK time.
+		Trackdown is a little guessing game for anyone who can spot their favourite ride from a mile away. Or from a
+		few hundred metres up, anyway.
+	</p>
+
+	<h2>How to play</h2>
+	<p>
+		Each day there's a new mystery coaster, and everyone gets the same one. You'll see its track from above, with
+		north at the top. Think you know it? Have a guess! You get six tries, and every miss unlocks a clue: when it
+		opened, how tall it is, how fast it goes, who built it, and finally where it lives. A fresh coaster rolls in at
+		midnight UK time.
 	</p>
 
 	<h2>Higher or Lower</h2>
 	<p>
-		Two coasters, one question: which is taller, faster, longer, loopier or newer? Keep going until you get one wrong.
+		Fancy a few more rides? Two coasters go head to head: which is taller, faster, longer, loopier or newer? See how
+		long a streak you can keep going.
 	</p>
 
-	<h2>Where the data comes from</h2>
+	<h2>Thank you, open data</h2>
 	<p>
-		Track outlines come from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © OpenStreetMap
-		contributors, available under the Open Database Licence. Coaster stats come from
-		<a href="https://en.wikipedia.org/">Wikipedia</a> articles, available under
-		<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Spotted a mistake? Fixing it on
-		OpenStreetMap or Wikipedia helps everyone.
+		The track maps come from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> (© OpenStreetMap
+		contributors, under the Open Database Licence), and the stats come from
+		<a href="https://en.wikipedia.org/">Wikipedia</a> (under
+		<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>). Spot something wrong or missing?
+		Fixing it on OpenStreetMap or Wikipedia makes it better for everyone, and it'll find its way here when the data's next refreshed.
 	</p>
 
-	<h2>Your progress</h2>
-	<p>Streaks and scores stay in your browser. There are no accounts and no tracking.</p>
+	<h2>Your streaks</h2>
+	<p>Your streaks and scores live in your own browser. No accounts, no tracking, just coasters.</p>
 
 	<p class="made">
-		Made by Sarah. The code is on <a href="https://github.com/mikachan/trackdown">GitHub</a>.
+		Made by Sarah. Peek at the code on <a href="https://github.com/mikachan/trackdown">GitHub</a>.
 	</p>
 </article>
 
