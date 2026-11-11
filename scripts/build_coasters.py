@@ -5,9 +5,13 @@ Usage: python3 -I build_coasters.py <tracks.json> <out.json>
 import json
 import math
 import sys
+import os
 from collections import defaultdict
 
-from country import inside
+# Run with python3 -I, which leaves this folder off the import path.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from country import inside  # noqa: E402
 
 
 def key(pt):
