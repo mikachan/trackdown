@@ -1,0 +1,14 @@
+{
+	// Spacefast settings for builds from the connected GitHub repo.
+	// The SvelteKit app lives in app/; the data pipeline in scripts/ is run by hand and its output is committed.
+	"build": {
+		"rootDirectory": "app",
+		"installCommand": "npm ci",
+		"buildCommand": "npm run build",
+		"outputDirectory": "build"
+	},
+	// SvelteKit prerenders /about as about.html, so keep clean URLs on.
+	"cleanUrls": true,
+	// adapter-static writes 404.html; serve it with a real 404 for unknown paths.
+	"fallback": { "path": "404.html", "status": 404 }
+}
