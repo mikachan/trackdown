@@ -7,6 +7,8 @@ import math
 import sys
 from collections import defaultdict
 
+from country import inside
+
 
 def key(pt):
     return (round(pt['lat'], 7), round(pt['lon'], 7))
@@ -17,16 +19,6 @@ def metres(a, b):
     dx = (b[1] - a[1]) * 111320 * math.cos(lat)
     dy = (b[0] - a[0]) * 110540
     return math.hypot(dx, dy)
-
-
-def inside(pt, poly):
-    """Ray-casting point-in-polygon, poly is a list of (lat, lon)."""
-    y, x = pt
-    hit = False
-    for (y1, x1), (y2, x2) in zip(poly, poly[1:]):
-        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
-            hit = not hit
-    return hit
 
 
 class UnionFind:

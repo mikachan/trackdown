@@ -1,3 +1,5 @@
+import contextlib
+import io
 import json
 import os
 import tempfile
@@ -20,7 +22,8 @@ class BuildCoastersTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             src, dst = os.path.join(tmp, 'in.json'), os.path.join(tmp, 'out.json')
             json.dump({'elements': elements}, open(src, 'w'))
-            build_coasters.main(src, dst)
+            with contextlib.redirect_stdout(io.StringIO()):
+                build_coasters.main(src, dst)
             coasters = json.load(open(dst))['coasters']
         self.assertEqual(len(coasters), 1)
         self.assertEqual(coasters[0]['osm_id'], 3)
