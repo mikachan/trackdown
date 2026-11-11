@@ -33,7 +33,10 @@
 	</p>
 
 	<h2>Your streaks</h2>
-	<p>Your streaks and scores live in your own browser. No accounts, no tracking.</p>
+	<p>
+		Your streaks and scores live in your own browser, and there are no accounts. Visits are counted with
+		<a href="https://www.goatcounter.com/">GoatCounter</a>, which doesn't use cookies.
+	</p>
 
 	<p class="made">
 		Made by Sarah. Peek at the code on <a href="https://github.com/mikachan/trackdown">GitHub</a>.

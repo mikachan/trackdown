@@ -7,6 +7,7 @@
 	import { loadGame, loadStats, saveGame, saveResult, type Stats } from '#lib/storage.ts';
 	import { shareText } from '#lib/share.ts';
 	import { celebrate } from '#lib/confetti.ts';
+	import { trackEvent } from '#lib/analytics.ts';
 	import type { Coaster } from '#lib/types.ts';
 	import Outline from '#lib/components/Outline.svelte';
 	import GuessInput from '#lib/components/GuessInput.svelte';
@@ -63,6 +64,7 @@
 		saveGame(game);
 		if (game.status !== 'playing') {
 			stats = saveResult(game);
+			trackEvent(game.status === 'won' ? 'daily-won' : 'daily-lost');
 			if (game.status === 'won') celebrate();
 		}
 	}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { trackEvent } from '#lib/analytics.ts';
 	import type { Stats } from '#lib/storage.ts';
 
 	let { stats, shareText }: { stats: Stats; shareText: string } = $props();
@@ -8,6 +9,7 @@
 	const most = $derived(Math.max(1, ...stats.guessCounts));
 
 	async function share() {
+		trackEvent('shared');
 		if (navigator.share) {
 			try {
 				await navigator.share({ text: shareText });

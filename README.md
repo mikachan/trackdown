@@ -8,7 +8,7 @@ Trackdown is part of [sekai.co.uk](https://sekai.co.uk).
 
 ## How it works
 
-Trackdown is a static site. A small Python pipeline turns open data into JSON files, and a SvelteKit app uses them to run both games in the browser. There's no server and no database. Players' streaks and scores are kept in their own browser.
+Trackdown is a static site. A small Python pipeline turns open data into JSON files, and a SvelteKit app uses them to run both games in the browser. There's no server and no database. Players' streaks and scores are kept in their own browser. Visits are counted with [GoatCounter](https://www.goatcounter.com/), which doesn't use cookies.
 
 - **Track outlines** come from OpenStreetMap: coaster tracks tagged `roller_coaster=track` or `attraction=roller_coaster`.
 - **Stats** (height, speed, length, inversions, opening year, manufacturer, park) come from Wikipedia's coaster infoboxes.

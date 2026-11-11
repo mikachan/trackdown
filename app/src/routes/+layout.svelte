@@ -1,12 +1,19 @@
 <script lang="ts">
 	import '../app.css';
+	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
+	import { countPage } from '#lib/analytics.ts';
 	import favicon from '#lib/assets/favicon.svg';
 	import type { LayoutProps } from './$types';
 
 	let { children }: LayoutProps = $props();
 
 	const description = 'Guess the roller coaster from its track. A new one every day.';
+
+	// GoatCounter's script counts the first page load; count in-app page changes here.
+	afterNavigate(({ type, to }) => {
+		if (type !== 'enter' && to) countPage(to.url.pathname);
+	});
 </script>
 
 <svelte:head>
@@ -18,6 +25,7 @@
 	<meta property="og:type" content="website" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="theme-color" content="#d6462c" />
+	<script data-goatcounter="https://sekaicouk-trackdown.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </svelte:head>
 
 <header>
