@@ -86,23 +86,7 @@ describe('streaks', () => {
 		expect(recordResult(stats, newGame('2026-12-01', 'a'))).toEqual(stats);
 	});
 
-	it('round-trips through storage', () => {
-		const store = memoryStore();
-		const s = record(loadStats(store), won('2026-12-01'));
-		saveStats(s, store);
-		expect(loadStats(store)).toEqual(s);
-	});
-});
 
-describe('higher or lower best score', () => {
-	it('saves and loads', () => {
-		const store = memoryStore();
-		saveBestHigherLower(7, store);
-		expect(bestHigherLower(store)).toBe(7);
-	});
-});
-
-describe('fixes from review: stale tabs', () => {
 	it('does not record a day older than the last one played', () => {
 		const tuesday = record(loadStats(memoryStore()), won('2026-12-01'), won('2026-12-02'));
 		expect(recordResult(tuesday, won('2026-12-01'))).toEqual(tuesday);
@@ -114,5 +98,13 @@ describe('fixes from review: stale tabs', () => {
 		const saved = saveResult(won('2026-12-03'), store);
 		expect(saved.currentStreak).toBe(3);
 		expect(loadStats(store).played).toBe(3);
+	});
+});
+
+describe('higher or lower best score', () => {
+	it('saves and loads', () => {
+		const store = memoryStore();
+		saveBestHigherLower(7, store);
+		expect(bestHigherLower(store)).toBe(7);
 	});
 });

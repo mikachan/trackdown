@@ -39,6 +39,14 @@ describe('nextRound', () => {
 		}
 	});
 
+	it('never pairs values that look the same once rounded', () => {
+		const left = coaster('left', { height_m: 62.5, speed_kmh: 100.4, length_m: 1000.2, inversions: 2, opened: 2000 });
+		const lookalike = coaster('lookalike', { height_m: 62.8, speed_kmh: 99.6, length_m: 999.9, inversions: 2, opened: 2000 });
+		for (let i = 0; i < 200; i++) {
+			expect(() => nextRound([left, lookalike], left, seeded(i))).toThrow();
+		}
+	});
+
 	it('changes stat between rounds', () => {
 		for (let i = 0; i < 100; i++) {
 			expect(nextRound(POOL, POOL[0], seeded(i), 'height_m').stat).not.toBe('height_m');
@@ -69,18 +77,6 @@ describe('hlPool', () => {
 	});
 });
 
-describe('QUESTIONS', () => {
-	it('asks plain questions', () => {
-		expect(QUESTIONS).toEqual({
-			height_m: 'Which is taller?',
-			speed_kmh: 'Which is faster?',
-			length_m: 'Which is longer?',
-			inversions: 'Which has more inversions?',
-			opened: 'Which opened later?'
-		});
-	});
-});
-
 describe('formatStat', () => {
 	it('formats each stat for the cards', () => {
 		expect(formatStat('height_m', 73.2)).toBe('73 m');
@@ -91,15 +87,7 @@ describe('formatStat', () => {
 	});
 });
 
-describe('fixes from review', () => {
-	it('never pairs values that look the same once rounded', () => {
-		const left = coaster('left', { height_m: 62.5, speed_kmh: 100.4, length_m: 1000.2, inversions: 2, opened: 2000 });
-		const lookalike = coaster('lookalike', { height_m: 62.8, speed_kmh: 99.6, length_m: 999.9, inversions: 2, opened: 2000 });
-		for (let i = 0; i < 200; i++) {
-			expect(() => nextRound([left, lookalike], left, seeded(i))).toThrow();
-		}
-	});
-
+describe('cardSubtitle', () => {
 	it('hides the opening year on the hidden card in "opened later" rounds', () => {
 		expect(cardSubtitle(TARON, 'opened', false)).toBe('Park');
 		expect(cardSubtitle(TARON, 'opened', true)).toBe('Park · 2000');

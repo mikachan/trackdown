@@ -63,9 +63,7 @@ describe('schedule', () => {
 			expect(days.slice(Math.max(0, i - 59), i)).not.toContain(days[i]);
 		}
 	});
-});
 
-describe('fixes from review: fallback pool', () => {
 	it('after the schedule ends, only reuses coasters Sarah approved', () => {
 		const approved = Array.from({ length: 60 }, (_, i) => `approved-${i}`);
 		for (let i = 0; i < 300; i++) {

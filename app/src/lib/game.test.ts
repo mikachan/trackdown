@@ -97,7 +97,7 @@ describe('searchCoasters', () => {
 	});
 });
 
-describe('fixes from review: identical suggestions', () => {
+describe('suggestionDetails', () => {
 	it('adds the opening year when name and park are the same', () => {
 		const old = coaster('the-bat-kings-island', 'The Bat', 'Kings Island', { opened: 1981 });
 		const newer = coaster('the-bat-kings-island-2', 'The Bat', 'Kings Island', { opened: 1993 });

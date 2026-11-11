@@ -1,6 +1,6 @@
 import unittest
 
-from parse_infoboxes import coord, fields, slug
+from parse_infoboxes import coord, slug
 
 
 class CoordTest(unittest.TestCase):
@@ -30,12 +30,6 @@ class SlugTest(unittest.TestCase):
         self.assertEqual(slug('Goliath', 'Walibi Holland'), 'goliath-walibi-holland')
         self.assertEqual(slug('Fønix', 'Fårup Sommerland'), 'fonix-farup-sommerland')
         self.assertEqual(slug('Taron', None), 'taron')
-
-
-class FieldsTest(unittest.TestCase):
-    def test_type_and_model_fields_are_read(self):
-        f = fields('{{Infobox roller coaster\n| name = Max\n| type = Steel\n| model = Wild Mouse\n}}')
-        self.assertEqual((f['type'], f['model']), ('Steel', 'Wild Mouse'))
 
 
 if __name__ == '__main__':

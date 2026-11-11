@@ -36,7 +36,8 @@
 
 <footer>
 	Track data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL) ·
-	Stats from <a href="https://en.wikipedia.org/">Wikipedia</a> (CC BY-SA) · <a href="/about">About</a>
+	Stats from <a href="https://en.wikipedia.org/">Wikipedia</a> (CC BY-SA) · <a href="/about">About</a> ·
+	<a href="https://sekai.co.uk">sekai.co.uk</a>
 </footer>
 
 <style>
