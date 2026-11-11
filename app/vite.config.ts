@@ -1,8 +1,12 @@
+/// <reference types="vitest/config" />
 import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	test: {
+		include: ['src/**/*.test.ts']
+	},
 	plugins: [
 		sveltekit({
 			compilerOptions: {
