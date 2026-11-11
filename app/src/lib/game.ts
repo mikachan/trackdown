@@ -24,13 +24,6 @@ export function cluesFor(c: Coaster): Clue[] {
 	return clues.filter((clue): clue is Clue => clue !== null);
 }
 
-/** Coasters the daily puzzle can fall back to once Sarah's schedule runs out. */
-export function puzzlePool(coasters: Coaster[]): string[] {
-	return coasters
-		.filter((c) => c.path && c.country && c.park && cluesFor(c).length === 5)
-		.map((c) => c.id);
-}
-
 export function newGame(dateKey: string, answerId: string): GameState {
 	return { dateKey, answerId, guesses: [], status: 'playing' };
 }
@@ -73,4 +66,16 @@ export function searchCoasters(query: string, coasters: Coaster[], limit = 8): C
 	}
 	hits.sort((a, b) => a.rank - b.rank || a.c.name.length - b.c.name.length);
 	return hits.slice(0, limit).map((h) => h.c);
+}
+
+/** The grey text after each suggestion: the park, plus the opening year when two coasters share name and park. */
+export function suggestionDetails(coasters: Coaster[]): Map<string, string> {
+	const counts = new Map<string, number>();
+	for (const c of coasters) counts.set(`${c.name}|${c.park}`, (counts.get(`${c.name}|${c.park}`) ?? 0) + 1);
+	return new Map(
+		coasters.map((c) => {
+			const twin = (counts.get(`${c.name}|${c.park}`) ?? 0) > 1;
+			return [c.id, [c.park, twin ? c.opened : null].filter(Boolean).join(' · ')];
+		})
+	);
 }

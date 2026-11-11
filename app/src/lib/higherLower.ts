@@ -26,7 +26,11 @@ export function nextRound(pool: Coaster[], left: Coaster, rng: () => number, las
 	const start = Math.floor(rng() * stats.length);
 	for (let i = 0; i < stats.length; i++) {
 		const stat = stats[(start + i) % stats.length];
-		const options = pool.filter((c) => c.id !== left.id && c[stat] !== null && c[stat] !== left[stat]);
+		// Compare what the player sees: 62.5 m and 62.8 m both show as "63 m", so that's a tie too.
+		const shown = formatStat(stat, left[stat] as number);
+		const options = pool.filter(
+			(c) => c.id !== left.id && c[stat] !== null && formatStat(stat, c[stat] as number) !== shown
+		);
 		if (options.length) return { stat, right: options[Math.floor(rng() * options.length)] };
 	}
 	throw new Error('Higher or Lower pool is too small');
@@ -43,6 +47,12 @@ export function formatStat(stat: Stat, value: number): string {
 		default:
 			return String(value);
 	}
+}
+
+/** Park and year under the name. The year is hidden on the unrevealed card when the question is about it. */
+export function cardSubtitle(coaster: Coaster, stat: Stat, reveal: boolean): string {
+	const year = stat === 'opened' && !reveal ? null : coaster.opened;
+	return [coaster.park, year].filter(Boolean).join(' · ');
 }
 
 export function isCorrect(left: Coaster, right: Coaster, stat: Stat, choice: 'higher' | 'lower'): boolean {

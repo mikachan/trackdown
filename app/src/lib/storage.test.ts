@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newGame, submitGuess, type GameState } from './game';
 import {
-	bestHigherLower, loadGame, loadStats, recordResult, saveBestHigherLower, saveGame, saveStats, type Stats
+	bestHigherLower, loadGame, loadStats, recordResult, saveBestHigherLower, saveGame, saveResult, saveStats, type Stats
 } from './storage';
 
 function memoryStore(initial: Record<string, string> = {}): Storage {
@@ -99,5 +99,20 @@ describe('higher or lower best score', () => {
 		const store = memoryStore();
 		saveBestHigherLower(7, store);
 		expect(bestHigherLower(store)).toBe(7);
+	});
+});
+
+describe('fixes from review: stale tabs', () => {
+	it('does not record a day older than the last one played', () => {
+		const tuesday = record(loadStats(memoryStore()), won('2026-12-01'), won('2026-12-02'));
+		expect(recordResult(tuesday, won('2026-12-01'))).toEqual(tuesday);
+	});
+
+	it('saveResult builds on what is in storage now, not on stats loaded earlier', () => {
+		const store = memoryStore();
+		saveStats(record(loadStats(store), won('2026-12-01'), won('2026-12-02')), store);
+		const saved = saveResult(won('2026-12-03'), store);
+		expect(saved.currentStreak).toBe(3);
+		expect(loadStats(store).played).toBe(3);
 	});
 });

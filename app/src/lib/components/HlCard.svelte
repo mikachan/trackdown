@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Outline from './Outline.svelte';
-	import { formatStat, type Stat } from '#lib/higherLower.ts';
+	import { cardSubtitle, formatStat, type Stat } from '#lib/higherLower.ts';
 	import type { Coaster } from '#lib/types.ts';
 
 	let {
@@ -15,7 +15,7 @@
 <!-- Five rows shared with the other card through subgrid, so both cards are always the same height. -->
 <article class="card">
 	<h2>{coaster.name}</h2>
-	<p class="where">{[coaster.park, coaster.opened].filter(Boolean).join(' · ')}</p>
+	<p class="where">{cardSubtitle(coaster, stat, reveal)}</p>
 	<div class="outline">
 		{#if coaster.path}<Outline path={coaster.path} size="small" />{:else}<span class="no-map">No track map yet</span>{/if}
 	</div>

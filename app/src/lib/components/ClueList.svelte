@@ -2,13 +2,18 @@
 	import type { Clue } from '#lib/game.ts';
 	import type { Coaster } from '#lib/types.ts';
 
-	let { clues, visible, guesses }: { clues: Clue[]; visible: number; guesses: Coaster[] } = $props();
+	let {
+		clues,
+		visible,
+		guesses,
+		details
+	}: { clues: Clue[]; visible: number; guesses: Coaster[]; details: Map<string, string> } = $props();
 </script>
 
 <ol class="rows">
 	{#each guesses as g (g.id)}
 		<li class="row wrong">
-			<span><s>{g.name}</s>{#if g.park}<small>{` · ${g.park}`}</small>{/if}</span><span aria-label="wrong">✗</span>
+			<span><s>{g.name}</s>{#if details.get(g.id)}<small>{` · ${details.get(g.id)}`}</small>{/if}</span><span aria-label="wrong">✗</span>
 		</li>
 	{/each}
 	{#each clues as clue, i (clue.label)}

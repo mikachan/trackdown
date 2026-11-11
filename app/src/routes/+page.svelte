@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte';
 	import data from '#lib/data/coasters.json';
 	import schedule from '#lib/data/schedule.json';
-	import { answerIdFor, decodeSchedule, londonDateKey, puzzleNumber } from '#lib/day.ts';
-	import { cluesFor, MAX_GUESSES, newGame, puzzlePool, submitGuess, visibleClues, type GameState } from '#lib/game.ts';
-	import { loadGame, loadStats, recordResult, saveGame, saveStats, type Stats } from '#lib/storage.ts';
+	import { decodeSchedule, londonDateKey, puzzleNumber, todaysAnswerId } from '#lib/day.ts';
+	import { cluesFor, MAX_GUESSES, newGame, submitGuess, suggestionDetails, visibleClues, type GameState } from '#lib/game.ts';
+	import { loadGame, loadStats, saveGame, saveResult, type Stats } from '#lib/storage.ts';
 	import { shareText } from '#lib/share.ts';
 	import { celebrate } from '#lib/confetti.ts';
 	import type { Coaster } from '#lib/types.ts';
@@ -16,6 +16,8 @@
 
 	const coasters = data.coasters as Coaster[];
 	const byId = new Map(coasters.map((c) => [c.id, c]));
+	const details = suggestionDetails(coasters);
+	const scheduleIds = decodeSchedule(schedule.days);
 
 	let game = $state<GameState | null>(null);
 	let stats = $state<Stats | null>(null);
@@ -28,23 +30,39 @@
 		game ? game.guesses.filter((id) => id !== game?.answerId).map((id) => byId.get(id)).filter((c) => c !== undefined) : []
 	);
 
-	onMount(() => {
+	function loadToday() {
 		const dateKey = londonDateKey(new Date());
-		const answerId = answerIdFor(dateKey, decodeSchedule(schedule.days), puzzlePool(coasters));
+		const answerId = todaysAnswerId(dateKey, scheduleIds);
 		const saved = loadGame(dateKey);
 		puzzle = puzzleNumber(dateKey);
-		origin = location.origin;
 		game = saved && saved.answerId === answerId ? saved : newGame(dateKey, answerId);
 		stats = loadStats();
+	}
+
+	/** A tab left open overnight moves on to the new puzzle when it's looked at again. */
+	function checkForNewDay() {
+		if (game && londonDateKey(new Date()) !== game.dateKey) loadToday();
+	}
+
+	onMount(() => {
+		origin = location.origin;
+		loadToday();
+		const onVisible = () => document.visibilityState === 'visible' && checkForNewDay();
+		document.addEventListener('visibilitychange', onVisible);
+		window.addEventListener('focus', checkForNewDay);
+		return () => {
+			document.removeEventListener('visibilitychange', onVisible);
+			window.removeEventListener('focus', checkForNewDay);
+		};
 	});
 
 	function guess(id: string) {
-		if (!game || !stats) return;
+		checkForNewDay();
+		if (!game || game.status !== 'playing') return;
 		game = submitGuess(game, id);
 		saveGame(game);
 		if (game.status !== 'playing') {
-			stats = recordResult(stats, game);
-			saveStats(stats);
+			stats = saveResult(game);
 			if (game.status === 'won') celebrate();
 		}
 	}
@@ -63,8 +81,8 @@
 
 		{#if game.status === 'playing'}
 			<Outline path={answer.path} />
-			<ClueList {clues} visible={visibleClues(game, clues)} guesses={wrongGuesses} />
-			<GuessInput {coasters} disabledIds={game.guesses} onguess={guess} />
+			<ClueList {clues} visible={visibleClues(game, clues)} guesses={wrongGuesses} {details} />
+			<GuessInput {coasters} {details} disabledIds={game.guesses} onguess={guess} />
 		{:else}
 			<AnswerCard coaster={answer} won={game.status === 'won'} />
 			{#if stats}<StatsPanel {stats} shareText={shareText(game, puzzle, origin)} />{/if}

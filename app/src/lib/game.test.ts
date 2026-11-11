@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cluesFor, MAX_GUESSES, newGame, puzzlePool, searchCoasters, submitGuess, visibleClues } from './game';
+import { cluesFor, MAX_GUESSES, newGame, searchCoasters, suggestionDetails, submitGuess, visibleClues } from './game';
 import type { Coaster } from './types';
 
 function coaster(id: string, name: string, park: string | null, extra: Partial<Coaster> = {}): Coaster {
@@ -97,10 +97,13 @@ describe('searchCoasters', () => {
 	});
 });
 
-describe('puzzlePool', () => {
-	it('only includes coasters with an outline and all five clues', () => {
-		const withPath = { ...GEFORCE, path: 'M1,1 L2,2' };
-		const noSpeed = { ...withPath, id: 'no-speed', speed_kmh: null };
-		expect(puzzlePool([withPath, noSpeed, GEFORCE])).toEqual([withPath.id]);
+describe('fixes from review: identical suggestions', () => {
+	it('adds the opening year when name and park are the same', () => {
+		const old = coaster('the-bat-kings-island', 'The Bat', 'Kings Island', { opened: 1981 });
+		const newer = coaster('the-bat-kings-island-2', 'The Bat', 'Kings Island', { opened: 1993 });
+		const details = suggestionDetails([old, newer, GEFORCE]);
+		expect(details.get(old.id)).toBe('Kings Island · 1981');
+		expect(details.get(newer.id)).toBe('Kings Island · 1993');
+		expect(details.get(GEFORCE.id)).toBe('Plopsaland Deutschland');
 	});
 });

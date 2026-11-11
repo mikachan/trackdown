@@ -4,9 +4,15 @@
 
 	let {
 		coasters,
+		details,
 		disabledIds,
 		onguess
-	}: { coasters: Coaster[]; disabledIds: string[]; onguess: (id: string) => void } = $props();
+	}: {
+		coasters: Coaster[];
+		details: Map<string, string>;
+		disabledIds: string[];
+		onguess: (id: string) => void;
+	} = $props();
 
 	let query = $state('');
 	let open = $state(false);
@@ -70,7 +76,7 @@
 						choose(c);
 					}}
 				>
-					<b>{c.name}</b>{#if c.park}<span>{` · ${c.park}`}</span>{/if}
+					<b>{c.name}</b>{#if details.get(c.id)}<span>{` · ${details.get(c.id)}`}</span>{/if}
 				</li>
 			{/each}
 		</ul>

@@ -80,3 +80,8 @@ export function answerIdFor(dateKey: string, scheduleIds: string[], poolIds: str
 	}
 	return answer;
 }
+
+/** Today's answer. Once Sarah's schedule runs out, it keeps picking from her approved coasters. */
+export function todaysAnswerId(dateKey: string, scheduleIds: string[], launch = LAUNCH_DATE): string {
+	return answerIdFor(dateKey, scheduleIds, scheduleIds, launch);
+}

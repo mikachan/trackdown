@@ -81,7 +81,8 @@ export function saveStats(stats: Stats, store = defaultStore()): void {
 }
 
 export function recordResult(stats: Stats, state: GameState): Stats {
-	if (state.status === 'playing' || stats.lastPlayedDate === state.dateKey) return stats;
+	// Same day twice, or an older day finished in a stale tab: leave the stats alone.
+	if (state.status === 'playing' || (stats.lastPlayedDate !== null && state.dateKey <= stats.lastPlayedDate)) return stats;
 	const next = { ...stats, guessCounts: [...stats.guessCounts], played: stats.played + 1, lastPlayedDate: state.dateKey };
 	if (state.status === 'won') {
 		next.won += 1;
@@ -93,6 +94,13 @@ export function recordResult(stats: Stats, state: GameState): Stats {
 		next.currentStreak = 0;
 	}
 	return next;
+}
+
+/** Record a finished game against the stats in storage now (another tab may have updated them). */
+export function saveResult(state: GameState, store = defaultStore()): Stats {
+	const stats = recordResult(loadStats(store), state);
+	saveStats(stats, store);
+	return stats;
 }
 
 export function bestHigherLower(store = defaultStore()): number {

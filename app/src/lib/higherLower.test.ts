@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatStat, hlPool, isCorrect, nextRound, QUESTIONS, type Stat } from './higherLower';
+import { cardSubtitle, formatStat, hlPool, isCorrect, nextRound, QUESTIONS, type Stat } from './higherLower';
 import type { Coaster } from './types';
 
 function coaster(id: string, extra: Partial<Coaster> = {}): Coaster {
@@ -88,5 +88,21 @@ describe('formatStat', () => {
 		expect(formatStat('length_m', 1620)).toBe('1,620 m');
 		expect(formatStat('inversions', 3)).toBe('3');
 		expect(formatStat('opened', 2002)).toBe('2002');
+	});
+});
+
+describe('fixes from review', () => {
+	it('never pairs values that look the same once rounded', () => {
+		const left = coaster('left', { height_m: 62.5, speed_kmh: 100.4, length_m: 1000.2, inversions: 2, opened: 2000 });
+		const lookalike = coaster('lookalike', { height_m: 62.8, speed_kmh: 99.6, length_m: 999.9, inversions: 2, opened: 2000 });
+		for (let i = 0; i < 200; i++) {
+			expect(() => nextRound([left, lookalike], left, seeded(i))).toThrow();
+		}
+	});
+
+	it('hides the opening year on the hidden card in "opened later" rounds', () => {
+		expect(cardSubtitle(TARON, 'opened', false)).toBe('Park');
+		expect(cardSubtitle(TARON, 'opened', true)).toBe('Park · 2000');
+		expect(cardSubtitle(TARON, 'height_m', false)).toBe('Park · 2000');
 	});
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { answerIdFor, decodeSchedule, londonDateKey, previousDay, puzzleNumber } from './day';
+import { answerIdFor, decodeSchedule, londonDateKey, previousDay, puzzleNumber, todaysAnswerId } from './day';
 
 // encode_schedule.encode(['taron-phantasialand'], 'trackdown-v1') from scripts/encode_schedule.py
 const FIXTURE = 'ABMTDAVJHx8PQwJQBxsADwoKCw';
@@ -61,6 +61,15 @@ describe('schedule', () => {
 		const days = Array.from({ length: 200 }, (_, i) => answerIdFor(addDays('2026-12-02', i), ['x'], POOL, '2026-12-01'));
 		for (let i = 0; i < days.length; i++) {
 			expect(days.slice(Math.max(0, i - 59), i)).not.toContain(days[i]);
+		}
+	});
+});
+
+describe('fixes from review: fallback pool', () => {
+	it('after the schedule ends, only reuses coasters Sarah approved', () => {
+		const approved = Array.from({ length: 60 }, (_, i) => `approved-${i}`);
+		for (let i = 0; i < 300; i++) {
+			expect(approved).toContain(todaysAnswerId(addDays('2026-12-01', i), approved, '2026-12-01'));
 		}
 	});
 });
