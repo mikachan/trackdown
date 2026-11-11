@@ -79,3 +79,9 @@ The site is hosted on [Spacefast](https://spacefast.com). Pushes to `main` build
 - Track data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under the [Open Database Licence](https://opendatacommons.org/licenses/odbl/). The derived track data in this repo (`app/src/lib/data/coasters.json`) is available under the same licence.
 - Coaster stats from [Wikipedia](https://en.wikipedia.org/), available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 - Country boundaries from [Natural Earth](https://www.naturalearthdata.com/) (public domain).
+
+## Licence
+
+Trackdown is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. See [`LICENSE`](LICENSE).
+
+The data has its own licences, listed under [Credits and licences](#credits-and-licences).
