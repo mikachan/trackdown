@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cluesFor, MAX_GUESSES, newGame, searchCoasters, submitGuess, visibleClues } from './game';
+import { cluesFor, MAX_GUESSES, newGame, puzzlePool, searchCoasters, submitGuess, visibleClues } from './game';
 import type { Coaster } from './types';
 
 function coaster(id: string, name: string, park: string | null, extra: Partial<Coaster> = {}): Coaster {
@@ -94,5 +94,13 @@ describe('searchCoasters', () => {
 
 	it('needs at least two characters', () => {
 		expect(searchCoasters('g', ALL)).toEqual([]);
+	});
+});
+
+describe('puzzlePool', () => {
+	it('only includes coasters with an outline and all five clues', () => {
+		const withPath = { ...GEFORCE, path: 'M1,1 L2,2' };
+		const noSpeed = { ...withPath, id: 'no-speed', speed_kmh: null };
+		expect(puzzlePool([withPath, noSpeed, GEFORCE])).toEqual([withPath.id]);
 	});
 });

@@ -24,6 +24,13 @@ export function cluesFor(c: Coaster): Clue[] {
 	return clues.filter((clue): clue is Clue => clue !== null);
 }
 
+/** Coasters the daily puzzle can fall back to once Sarah's schedule runs out. */
+export function puzzlePool(coasters: Coaster[]): string[] {
+	return coasters
+		.filter((c) => c.path && c.country && c.park && cluesFor(c).length === 5)
+		.map((c) => c.id);
+}
+
 export function newGame(dateKey: string, answerId: string): GameState {
 	return { dateKey, answerId, guesses: [], status: 'playing' };
 }
