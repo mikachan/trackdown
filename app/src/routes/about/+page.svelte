@@ -30,7 +30,7 @@
 	<p>Streaks and scores stay in your browser. There are no accounts and no tracking.</p>
 
 	<p class="made">
-		Made by Sarah, a coaster fan. The code is on <a href="https://github.com/mikachan/trackdown">GitHub</a>.
+		Made by Sarah. The code is on <a href="https://github.com/mikachan/trackdown">GitHub</a>.
 	</p>
 </article>
 
