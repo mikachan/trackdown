@@ -16,7 +16,7 @@ export default defineConfig({
 			},
 
 			// Trackdown is a fully static site, hosted on Spacefast.
-			adapter: adapter()
+			adapter: adapter({ fallback: '404.html' })
 		})
 	]
 });
