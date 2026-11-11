@@ -1,0 +1,14 @@
+node_modules/
+app/build/
+app/.svelte-kit/
+data/osm/
+data/wikipedia/pages.json
+data/naturalearth/
+data/coasters.json
+data/candidates.json
+data/schedule.json
+review/
+.spacefast/state.json
+__pycache__/
+.DS_Store
+outline-check.html
