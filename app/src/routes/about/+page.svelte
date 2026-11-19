@@ -12,7 +12,7 @@
 	<h2>How to play</h2>
 	<p>
 		Each day there's a new mystery coaster, and everyone gets the same one. You'll see its track from above, with
-		north at the top. You'll also know which country it's in. Think you know it? Have a guess! You get six tries, and
+		north at the top. You'll also know which country it's in, plus one other clue that changes each day. Think you know it? Have a guess! You get six tries, and
 		every miss unlocks a clue: who built it, when it opened, how tall and fast it is, how many times it turns you
 		upside down, and finally which park it lives in. A fresh coaster rolls in at
 		midnight UK time.

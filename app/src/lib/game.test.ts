@@ -44,6 +44,30 @@ describe('cluesFor', () => {
 		expect(cluesFor({ ...GEFORCE, country: null }).some((c) => c.free)).toBe(false);
 	});
 
+	it('gives one more clue free for the day, never the park, and moves it up the ladder', () => {
+		const coaster = { ...GEFORCE, inversions: 0 };
+		const ladder = cluesFor(coaster).map((c) => c.label);
+		const bonuses = new Set<string>();
+		for (let d = 1; d <= 28; d++) {
+			const clues = cluesFor(coaster, `2026-12-${String(d).padStart(2, '0')}`);
+			const free = clues.filter((c) => c.free).map((c) => c.label);
+			expect(free).toHaveLength(2);
+			expect(free[0]).toBe('Country');
+			expect(clues.map((c) => c.label)).toEqual([...free, ...ladder.filter((l) => !free.includes(l))]);
+			bonuses.add(free[1]);
+		}
+		expect(bonuses.has('Park')).toBe(false);
+		expect(bonuses.size).toBeGreaterThan(1);
+	});
+
+	it('picks the same free clue for the same day', () => {
+		expect(cluesFor(GEFORCE, '2026-12-01')).toEqual(cluesFor(GEFORCE, '2026-12-01'));
+	});
+
+	it('still gives a free clue when the country is missing', () => {
+		expect(cluesFor({ ...GEFORCE, country: null }, '2026-12-01').filter((c) => c.free)).toHaveLength(1);
+	});
+
 	it('shows whichever of height and speed exists', () => {
 		expect(cluesFor({ ...GEFORCE, height_m: null }).find((c) => c.label === 'Height & speed')?.value).toBe('120 km/h');
 	});
@@ -75,6 +99,7 @@ describe('guesses', () => {
 		expect(visibleClues(play('a', []), clues)).toBe(1);
 		expect(visibleClues(play('a', ['1', '2']), clues)).toBe(3);
 		expect(visibleClues(play('a', ['1', '2']), cluesFor({ ...GEFORCE, country: null }))).toBe(2);
+		expect(visibleClues(play('a', ['1']), cluesFor(GEFORCE, '2026-12-01'))).toBe(3);
 		expect(visibleClues(play('a', ['a']), clues)).toBe(clues.length);
 		expect(visibleClues(play('a', ['1', '2', '3', '4', '5', '6']), clues)).toBe(clues.length);
 	});

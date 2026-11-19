@@ -26,7 +26,7 @@
 	let origin = $state('');
 
 	const answer = $derived(game ? byId.get(game.answerId) : undefined);
-	const clues = $derived(answer ? cluesFor(answer) : []);
+	const clues = $derived(answer && game ? cluesFor(answer, game.dateKey) : []);
 	const wrongGuesses = $derived(
 		game ? game.guesses.filter((id) => id !== game?.answerId).map((id) => byId.get(id)).filter((c) => c !== undefined) : []
 	);

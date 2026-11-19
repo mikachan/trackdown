@@ -1,4 +1,5 @@
 /** The rules of Daily Trackdown: clues, guesses and coaster search. Pure functions, no storage. */
+import { hash } from './day';
 import type { Coaster } from './types';
 
 export const MAX_GUESSES = 6;
@@ -13,8 +14,11 @@ export type GameState = {
 	status: 'playing' | 'won' | 'lost';
 };
 
-/** Clue ladder, broad to narrow: country for free, then manufacturer, decade, height & speed, inversions and park. */
-export function cluesFor(c: Coaster): Clue[] {
+/**
+ * Clue ladder, broad to narrow: country for free, then manufacturer, decade, height & speed, inversions and park.
+ * With a seed (the day's date), one of the middle clues is also given free, the same one for everyone that day.
+ */
+export function cluesFor(c: Coaster, seed?: string): Clue[] {
 	const size = [
 		c.height_m !== null ? `${Math.round(c.height_m)} m` : null,
 		c.speed_kmh !== null ? `${Math.round(c.speed_kmh)} km/h` : null
@@ -27,7 +31,12 @@ export function cluesFor(c: Coaster): Clue[] {
 		c.inversions !== null ? { label: 'Inversions', value: String(c.inversions) } : null,
 		c.park ? { label: 'Park', value: c.park } : null
 	];
-	return clues.filter((clue): clue is Clue => clue !== null);
+	const ladder = clues.filter((clue): clue is Clue => clue !== null);
+	if (seed === undefined) return ladder;
+	const pickable = ladder.filter((clue) => !clue.free && clue.label !== 'Park');
+	if (!pickable.length) return ladder;
+	const bonus = { ...pickable[hash(seed) % pickable.length], free: true };
+	return [...ladder.filter((clue) => clue.free), bonus, ...ladder.filter((clue) => !clue.free && clue.label !== bonus.label)];
 }
 
 export function newGame(dateKey: string, answerId: string): GameState {

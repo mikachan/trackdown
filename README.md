@@ -2,7 +2,7 @@
 
 [![Spacefast](https://img.shields.io/github/deployments/mikachan/trackdown/production?label=Spacefast)](https://github.com/mikachan/trackdown/deployments)
 
-A daily guessing game for roller coaster fans. Each day there's a new coaster to find from its track, seen from above. You start knowing its country, and every wrong guess unlocks another clue: who built it, its opening decade, its height and top speed, its inversions, and its park. There's also an endless Higher or Lower game comparing coaster stats.
+A daily guessing game for roller coaster fans. Each day there's a new coaster to find from its track, seen from above. You start knowing its country and one other clue picked for the day, and every wrong guess unlocks another clue: who built it, its opening decade, its height and top speed, its inversions, and its park. There's also an endless Higher or Lower game comparing coaster stats.
 
 Trackdown is part of [sekai.co.uk](https://sekai.co.uk).
 
