@@ -27,20 +27,25 @@ const play = (answer: string, guesses: string[]) =>
 	guesses.reduce((s, g) => submitGuess(s, g), newGame('2026-12-01', answer));
 
 describe('cluesFor', () => {
-	it('orders clues and skips missing ones', () => {
-		expect(cluesFor({ ...GEFORCE, speed_kmh: null }).map((c) => c.label)).toEqual([
-			'Opened', 'Height', 'Manufacturer', 'Country & park'
+	it('orders clues broad to narrow and skips missing ones', () => {
+		expect(cluesFor({ ...GEFORCE, opened: null }).map((c) => c.label)).toEqual([
+			'Country', 'Manufacturer', 'Height & speed', 'Park'
 		]);
 	});
 
 	it('formats clue values', () => {
-		expect(cluesFor(GEFORCE).map((c) => c.value)).toEqual([
-			'2001', '53 m', '120 km/h', 'Intamin', 'Germany · Plopsaland Deutschland'
+		expect(cluesFor({ ...GEFORCE, inversions: 0 }).map((c) => c.value)).toEqual([
+			'Germany', 'Intamin', '2000s', '53 m · 120 km/h', '0', 'Plopsaland Deutschland'
 		]);
 	});
 
-	it('shows whichever of country and park exists', () => {
-		expect(cluesFor({ ...GEFORCE, country: null }).at(-1)?.value).toBe('Plopsaland Deutschland');
+	it('gives the country for free', () => {
+		expect(cluesFor(GEFORCE).filter((c) => c.free).map((c) => c.label)).toEqual(['Country']);
+		expect(cluesFor({ ...GEFORCE, country: null }).some((c) => c.free)).toBe(false);
+	});
+
+	it('shows whichever of height and speed exists', () => {
+		expect(cluesFor({ ...GEFORCE, height_m: null }).find((c) => c.label === 'Height & speed')?.value).toBe('120 km/h');
 	});
 });
 
@@ -65,9 +70,11 @@ describe('guesses', () => {
 		expect(play('a', ['a', 'b']).guesses).toEqual(['a']);
 	});
 
-	it('unlocks one clue per wrong guess, and all clues at the end', () => {
+	it('shows free clues from the start, then one more per wrong guess, and all at the end', () => {
 		const clues = cluesFor(GEFORCE);
-		expect(visibleClues(play('a', ['1', '2']), clues)).toBe(2);
+		expect(visibleClues(play('a', []), clues)).toBe(1);
+		expect(visibleClues(play('a', ['1', '2']), clues)).toBe(3);
+		expect(visibleClues(play('a', ['1', '2']), cluesFor({ ...GEFORCE, country: null }))).toBe(2);
 		expect(visibleClues(play('a', ['a']), clues)).toBe(clues.length);
 		expect(visibleClues(play('a', ['1', '2', '3', '4', '5', '6']), clues)).toBe(clues.length);
 	});

@@ -8,6 +8,8 @@
 		guesses,
 		details
 	}: { clues: Clue[]; visible: number; guesses: Coaster[]; details: Map<string, string> } = $props();
+
+	const free = $derived(clues.filter((c) => c.free).length);
 </script>
 
 <ol class="rows">
@@ -20,7 +22,7 @@
 		{#if i < visible}
 			<li class="row clue"><span>{clue.label}</span><b>{clue.value}</b></li>
 		{:else}
-			<li class="row locked"><span>{clue.label}</span><span>after guess {i + 1}</span></li>
+			<li class="row locked"><span>{clue.label}</span><span>after guess {i - free + 1}</span></li>
 		{/if}
 	{/each}
 </ol>

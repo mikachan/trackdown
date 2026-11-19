@@ -3,7 +3,8 @@ import type { Coaster } from './types';
 
 export const MAX_GUESSES = 6;
 
-export type Clue = { label: string; value: string };
+/** A free clue is shown from the start; the rest unlock one per wrong guess. */
+export type Clue = { label: string; value: string; free?: boolean };
 
 export type GameState = {
 	dateKey: string;
@@ -12,14 +13,19 @@ export type GameState = {
 	status: 'playing' | 'won' | 'lost';
 };
 
-/** Clue ladder, in order: opening year, height, speed, manufacturer, then country and park. */
+/** Clue ladder, broad to narrow: country for free, then manufacturer, decade, height & speed, inversions and park. */
 export function cluesFor(c: Coaster): Clue[] {
+	const size = [
+		c.height_m !== null ? `${Math.round(c.height_m)} m` : null,
+		c.speed_kmh !== null ? `${Math.round(c.speed_kmh)} km/h` : null
+	].filter(Boolean);
 	const clues: (Clue | null)[] = [
-		c.opened !== null ? { label: 'Opened', value: String(c.opened) } : null,
-		c.height_m !== null ? { label: 'Height', value: `${Math.round(c.height_m)} m` } : null,
-		c.speed_kmh !== null ? { label: 'Top speed', value: `${Math.round(c.speed_kmh)} km/h` } : null,
+		c.country ? { label: 'Country', value: c.country, free: true } : null,
 		c.manufacturer ? { label: 'Manufacturer', value: c.manufacturer } : null,
-		c.country || c.park ? { label: 'Country & park', value: [c.country, c.park].filter(Boolean).join(' · ') } : null
+		c.opened !== null ? { label: 'Opened', value: `${Math.floor(c.opened / 10) * 10}s` } : null,
+		size.length ? { label: 'Height & speed', value: size.join(' · ') } : null,
+		c.inversions !== null ? { label: 'Inversions', value: String(c.inversions) } : null,
+		c.park ? { label: 'Park', value: c.park } : null
 	];
 	return clues.filter((clue): clue is Clue => clue !== null);
 }
@@ -37,8 +43,9 @@ export function submitGuess(state: GameState, guessId: string): GameState {
 
 export function visibleClues(state: GameState, clues: Clue[]): number {
 	if (state.status !== 'playing') return clues.length;
+	const free = clues.filter((c) => c.free).length;
 	const wrong = state.guesses.filter((g) => g !== state.answerId).length;
-	return Math.min(wrong, clues.length);
+	return Math.min(free + wrong, clues.length);
 }
 
 export function fold(s: string): string {
